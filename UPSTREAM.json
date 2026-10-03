@@ -1,0 +1,17 @@
+{
+  "upstream": "https://github.com/qingjian-team/qingjian",
+  "tag": "v0.1.4",
+  "commit": "f7abaefcb1a3aeaca5c01692941a64a7b1f43eb5",
+  "vendored_crates": [
+    "qingjian-core",
+    "qingjian-dictionary",
+    "qingjian-format",
+    "qingjian-translate"
+  ],
+  "glossary_entries": 88112,
+  "dictionary_words": 91919,
+  "sha256": {
+    "dict.tsv": "f1a151090c6de319c97bdc19b59e329852f725e63c5cd053304f4bb468049887",
+    "glossary-en.tsv": "70ff4523994e30eac2cf2e179c2afe6b4c608912f164bcbb6fbf74b3df39b6c1"
+  }
+}

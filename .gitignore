@@ -1,0 +1,9 @@
+/target/
+/build/
+/ios/Generated/
+*.xcuserstate
+xcuserdata/
+.DS_Store
+__pycache__/
+*.ipa
+*.zip

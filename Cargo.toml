@@ -1,0 +1,33 @@
+[workspace]
+resolver = "3"
+members = ["bridge", "vendor/qingjian-core", "vendor/qingjian-dictionary", "vendor/qingjian-format", "vendor/qingjian-translate"]
+
+[workspace.package]
+version = "0.1.1"
+edition = "2024"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/qingjian-team/qingjian"
+
+[workspace.lints.clippy]
+all = "warn"
+
+[workspace.dependencies]
+qingjian-core = { path = "vendor/qingjian-core" }
+qingjian-dictionary = { path = "vendor/qingjian-dictionary" }
+qingjian-format = { path = "vendor/qingjian-format" }
+qingjian-translate = { path = "vendor/qingjian-translate" }
+serde = { version = "1.0.229", features = ["derive"] }
+thiserror = "2.0.20"
+tracing = "0.1.44"
+serde_json = "1.0.151"
+toml = "1.1.5"
+jiff = "0.2.35"
+foldhash = "0.2.0"
+ferrous-opencc = { version = "0.4.0", default-features = false, features = ["s2t-conversion"] }
+memmap2 = "0.9"
+zerocopy = { version = "0.8", features = ["derive"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
