@@ -60,6 +60,7 @@ jobs:
             build/*screenshot.png
             build/QJMobile-simulator.zip
             build/swift-tests.xcresult.zip
+            build/screenshots/
             Cargo.lock
           retention-days: 7
           if-no-files-found: warn

@@ -2,7 +2,7 @@
 import UIKit
 
 final class KeyboardViewController: UIInputViewController {
-    private let engine = EngineClient()
+    private let engine: EngineClient
     private let vertical = UIStackView()
     private let toolbar = UIStackView()
     private let preedit = UILabel()
@@ -31,6 +31,16 @@ final class KeyboardViewController: UIInputViewController {
     private var cancelButton = UIButton(type: .system)
     private var engineFailed = false
     private var returnButton: KeyButton?
+
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        engine = EngineClient(resourceBundle: nibBundleOrNil ?? .main)
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+
+    required init?(coder: NSCoder) {
+        engine = EngineClient()
+        super.init(coder: coder)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

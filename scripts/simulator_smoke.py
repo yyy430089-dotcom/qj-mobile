@@ -38,8 +38,11 @@ def main():
                         'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'ARCHS=arm64', 'test'], cwd=ROOT, check=True)
         subprocess.run(['ditto', '-c', '-k', '--keepParent', 'build/SwiftTests.xcresult',
                         'build/swift-tests.xcresult.zip'], cwd=ROOT, check=True)
+        subprocess.run(['xcrun', 'xcresulttool', 'export', 'attachments', '--path', 'build/SwiftTests.xcresult',
+                        '--output-path', 'build/screenshots'], cwd=ROOT, check=True)
     result = {'device': device['name'], 'launch': launched.strip(), 'host_app_launch': 'passed',
               'swift_bridge_tests': 'skipped bootstrap' if args.bootstrap else 'passed',
+              'keyboard_layout_tests': 'skipped bootstrap' if args.bootstrap else 'passed (portrait, landscape, dark mode)',
               'keyboard_enable_and_cross_app_typing': 'pending physical device validation'}
     (ROOT / 'build/simulator-report.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(result, ensure_ascii=False))

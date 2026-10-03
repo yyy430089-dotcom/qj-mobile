@@ -83,8 +83,8 @@ targets:
     platform: iOS
     sources:
       - path: ios/Tests
-      - path: ios/Keyboard/EngineClient.swift
-      - path: ios/Keyboard/Frame.swift
+      - path: ios/Keyboard
+        excludes: [BridgingHeader.h]
       - path: build/Data
         buildPhase: resources
     settings:
