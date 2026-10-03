@@ -10,12 +10,24 @@ final class KeyboardLayoutTests: XCTestCase {
 
     private func checkLayout(width: CGFloat, height: CGFloat, style: UIUserInterfaceStyle, name: String) throws {
         let controller = KeyboardViewController(nibName: nil, bundle: Bundle(for: Self.self))
+        // 动态颜色需要真实的窗口 trait 环境；离屏控制器会沿用浅色。
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        window.overrideUserInterfaceStyle = style
+        window.rootViewController = controller
         controller.loadViewIfNeeded()
         controller.overrideUserInterfaceStyle = style
+        controller.view.traitOverrides.userInterfaceStyle = style
+        window.isHidden = false
         controller.view.frame = CGRect(x: 0, y: 0, width: width, height: height)
         controller.beginAppearanceTransition(true, animated: false)
         controller.endAppearanceTransition()
         controller.view.layoutIfNeeded()
+        XCTAssertEqual(controller.view.traitCollection.userInterfaceStyle, style)
+        let background = try XCTUnwrap(controller.view.layer.backgroundColor)
+        var brightness: CGFloat = 0
+        UIColor(cgColor: background).getWhite(&brightness, alpha: nil)
+        if style == .dark { XCTAssertLessThan(brightness, 0.3) }
+        else { XCTAssertGreaterThan(brightness, 0.7) }
         for letter in "kaifa" {
             let key = try XCTUnwrap(descendants(controller.view).compactMap { $0 as? KeyButton }
                 .first { $0.title(for: .normal) == String(letter) })
@@ -47,6 +59,7 @@ final class KeyboardLayoutTests: XCTestCase {
         add(attachment)
         controller.beginAppearanceTransition(false, animated: false)
         controller.endAppearanceTransition()
+        window.isHidden = true
     }
 
     func testPortraitLight() throws { try checkLayout(width: 393, height: 304, style: .light, name: "keyboard-portrait-light") }
