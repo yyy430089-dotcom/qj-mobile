@@ -35,7 +35,11 @@ def main():
                         '-configuration', 'Release', '-sdk', 'iphonesimulator',
                         '-destination', f'platform=iOS Simulator,id={udid}',
                         '-derivedDataPath', 'build/DerivedData', '-resultBundlePath', 'build/SwiftTests.xcresult',
-                        'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'ARCHS=arm64', 'test'], cwd=ROOT, check=True)
+                        '-parallel-testing-enabled', 'NO', '-test-timeouts-enabled', 'YES',
+                        '-default-test-execution-time-allowance', '30',
+                        '-maximum-test-execution-time-allowance', '45',
+                        'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'ARCHS=arm64', 'test'],
+                       cwd=ROOT, check=True, timeout=360)
         subprocess.run(['ditto', '-c', '-k', '--keepParent', 'build/SwiftTests.xcresult',
                         'build/swift-tests.xcresult.zip'], cwd=ROOT, check=True)
         subprocess.run(['xcrun', 'xcresulttool', 'export', 'attachments', '--path', 'build/SwiftTests.xcresult',
