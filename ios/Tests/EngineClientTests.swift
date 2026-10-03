@@ -36,7 +36,8 @@ final class EngineClientTests: XCTestCase {
         let partial = try perform(engine, ["action": "choose", "revision": query.revision, "index": index])
         XCTAssertEqual(partial.committed, "开发")
         XCTAssertEqual(partial.input, "zhe")
-        let last = try perform(engine, ["action": "space"])
+        let lastIndex = try XCTUnwrap(partial.candidates.firstIndex { $0.text == "者" })
+        let last = try perform(engine, ["action": "choose", "revision": partial.revision, "index": lastIndex])
         XCTAssertEqual(last.committed, "者")
     }
 

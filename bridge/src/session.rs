@@ -37,14 +37,22 @@ impl Session {
         engine.set_learning(false);
         engine.set_private(true);
         engine.set_full_width_punctuation(true);
-        Self { engine, candidates: Vec::new(), preedit: String::new(), revision: 0, warning: None }
+        Self {
+            engine,
+            candidates: Vec::new(),
+            preedit: String::new(),
+            revision: 0,
+            warning: None,
+        }
     }
 
     fn refresh(&mut self) {
         self.revision += 1;
         self.candidates.clear();
         self.preedit = self.engine.composition().text().to_owned();
-        if self.engine.composition().is_empty() { return; }
+        if self.engine.composition().is_empty() {
+            return;
+        }
         if let Ok(mut query) = self.engine.query() {
             self.preedit = query.marked_text();
             query.candidates.items.truncate(MAX_CANDIDATES);
@@ -61,9 +69,13 @@ impl Session {
 
     fn finish_composition(&mut self) -> String {
         let mut result = String::new();
-        if !self.engine.composition().is_empty() { self.refresh(); }
+        if !self.engine.composition().is_empty() {
+            self.refresh();
+        }
         for _ in 0..MAX_INPUT {
-            if self.engine.composition().is_empty() { break; }
+            if self.engine.composition().is_empty() {
+                break;
+            }
             let before = self.engine.composition().text().len();
             result.push_str(&self.commit_first());
             self.refresh();
@@ -94,11 +106,11 @@ impl Session {
                             self.engine.push(c);
                         } else {
                             committed.push_str(&self.finish_composition());
-                            if !self.engine.english_mode() {
-                                if let Some(punctuation) = self.engine.punctuate(c) {
-                                    committed.push_str(punctuation);
-                                    continue;
-                                }
+                            if !self.engine.english_mode()
+                                && let Some(punctuation) = self.engine.punctuate(c)
+                            {
+                                committed.push_str(punctuation);
+                                continue;
                             }
                             committed.push(c);
                             self.engine.note_passthrough(c);
@@ -113,12 +125,18 @@ impl Session {
                 }
             }
             Action::Space => {
-                if self.engine.composition().is_empty() { committed.push(' '); }
-                else { committed = self.commit_first(); }
+                if self.engine.composition().is_empty() {
+                    committed.push(' ');
+                } else {
+                    committed = self.commit_first();
+                }
             }
             Action::Enter => {
-                if self.engine.composition().is_empty() { committed.push('\n'); }
-                else { committed = self.finish_composition(); }
+                if self.engine.composition().is_empty() {
+                    committed.push('\n');
+                } else {
+                    committed = self.finish_composition();
+                }
             }
             Action::Raw => committed = self.engine.take_raw(),
             Action::Cancel => {
@@ -145,27 +163,42 @@ impl Session {
             Action::Annotate { revision } => {
                 changed = false;
                 if revision == self.revision {
-                    let mut list = CandidateList { items: std::mem::take(&mut self.candidates) };
+                    let mut list = CandidateList {
+                        items: std::mem::take(&mut self.candidates),
+                    };
                     self.engine.annotate(&mut list);
                     self.candidates = list.items;
                 }
             }
             Action::Snapshot => changed = false,
         }
-        if changed { self.refresh(); }
+        if changed {
+            self.refresh();
+        }
         Frame {
             revision: self.revision,
             input: self.engine.composition().text().to_owned(),
             preedit: self.preedit.clone(),
-            candidates: self.candidates.iter().map(|c| CandidateView {
-                text: c.text.clone(),
-                annotation: c.translation.as_ref().and_then(|t| t.senses().first()).map(|s| {
-                    s.part_of_speech.map_or_else(|| s.text.clone(), |p| format!("{} {}", p, s.text))
-                }),
-            }).collect(),
-            committed, delete_backward,
+            candidates: self
+                .candidates
+                .iter()
+                .map(|c| CandidateView {
+                    text: c.text.clone(),
+                    annotation: c
+                        .translation
+                        .as_ref()
+                        .and_then(|t| t.senses().first())
+                        .map(|s| {
+                            s.part_of_speech
+                                .map_or_else(|| s.text.clone(), |p| format!("{} {}", p, s.text))
+                        }),
+                })
+                .collect(),
+            committed,
+            delete_backward,
             english: self.engine.english_mode(),
-            error, warning: self.warning.clone(),
+            error,
+            warning: self.warning.clone(),
         }
     }
 }

@@ -28,17 +28,11 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           cache-on-failure: true
-      - name: Resolve lockfile for initial build
-        if: inputs.variant == 'full'
-        run: |
-          if [ ! -f Cargo.lock ]; then cargo generate-lockfile; fi
       - name: Rust tests
         if: inputs.variant == 'full'
         run: |
           python3 scripts/verify_sources.py
-          cargo fmt -p qjmobile-bridge
-          mkdir -p build
-          zip -r build/formatted-bridge.zip bridge/src
+          cargo fmt -p qjmobile-bridge -- --check
           cargo test --workspace --locked
           cargo clippy -p qjmobile-bridge --all-targets --locked -- -D warnings
       - name: Build app and keyboard
@@ -66,7 +60,6 @@ jobs:
             build/*screenshot.png
             build/QJMobile-simulator.zip
             build/swift-tests.xcresult.zip
-            build/formatted-bridge.zip
             Cargo.lock
           retention-days: 7
           if-no-files-found: warn

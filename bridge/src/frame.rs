@@ -24,7 +24,10 @@ pub(crate) struct Frame {
 
 impl Frame {
     pub fn error(message: &str) -> Self {
-        Self { error: Some(message.into()), ..Self::default() }
+        Self {
+            error: Some(message.into()),
+            ..Self::default()
+        }
     }
 }
 
