@@ -1,6 +1,8 @@
 /target/
 /build/
 /ios/Generated/
+/QJMobile.xcodeproj/
+.project-build.yml
 *.xcuserstate
 xcuserdata/
 .DS_Store

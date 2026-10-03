@@ -49,10 +49,10 @@ def main():
     temp_spec = ROOT / '.project-build.yml'
     temp_spec.write_text(spec, encoding='utf-8')
     try:
-        run('xcodegen', 'generate', '--spec', str(temp_spec), '--project', str(build))
+        run('xcodegen', 'generate', '--spec', str(temp_spec), '--project', str(ROOT))
     finally:
         temp_spec.unlink(missing_ok=True)
-    base = ['xcodebuild', '-project', 'build/QJMobile.xcodeproj', '-scheme', 'QJMobile',
+    base = ['xcodebuild', '-project', 'QJMobile.xcodeproj', '-scheme', 'QJMobile',
             '-configuration', 'Release', '-derivedDataPath', 'build/DerivedData',
             'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO']
     run(*base, '-sdk', 'iphoneos', '-destination', 'generic/platform=iOS', 'build')
