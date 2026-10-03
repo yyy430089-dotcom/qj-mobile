@@ -262,7 +262,10 @@ final class KeyboardViewController: UIInputViewController {
         showTranslation.toggle()
         UserDefaults.standard.set(!showTranslation, forKey: "hideEnglishGloss")
         translation.setTitle(showTranslation ? "译词 ✓" : "译词", for: .normal)
-        if let frame { render(frame, resetScroll: false) }
+        if showTranslation && frame?.candidates.isEmpty == false {
+            // 关闭期间未查询译词；重新开启时立即补查当前候选。
+            send(["action": "snapshot"])
+        } else if let frame { render(frame, resetScroll: false) }
     }
 
     @objc private func cancelComposition() { send(["action": "cancel"]) }
