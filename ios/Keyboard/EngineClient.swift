@@ -27,8 +27,9 @@ final class EngineClient {
             #else
             if !initializationAttempted {
                 initializationAttempted = true
-                if let dict = resourceBundle.path(forResource: "dict", ofType: "qj"),
-                   let gloss = resourceBundle.path(forResource: "glossary-en", ofType: "qj") {
+                if let dict = resourceBundle.path(forResource: "dict", ofType: "qj") {
+                    let gloss = resourceBundle.path(forResource: "glossary-en", ofType: "qj") ??
+                        resourceBundle.bundleURL.appendingPathComponent("glossary-en.qj").path
                     handle = dict.withCString { dictPointer in
                         gloss.withCString { qjm_create(dictPointer, $0) }
                     }

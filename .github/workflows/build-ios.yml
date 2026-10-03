@@ -37,10 +37,10 @@ jobs:
         run: |
           python3 scripts/verify_sources.py
           cargo fmt -p qjmobile-bridge
-          cargo test --workspace --locked
-          cargo clippy -p qjmobile-bridge --all-targets --locked -- -D warnings
           mkdir -p build
           zip -r build/formatted-bridge.zip bridge/src
+          cargo test --workspace --locked
+          cargo clippy -p qjmobile-bridge --all-targets --locked -- -D warnings
       - name: Build app and keyboard
         run: |
           if [ '${{ inputs.variant }}' = 'bootstrap' ]; then

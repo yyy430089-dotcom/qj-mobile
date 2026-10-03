@@ -54,7 +54,7 @@ def main():
         temp_spec.unlink(missing_ok=True)
     base = ['xcodebuild', '-project', 'QJMobile.xcodeproj', '-scheme', 'QJMobile',
             '-configuration', 'Release', '-derivedDataPath', 'build/DerivedData',
-            'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO']
+            'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'ARCHS=arm64']
     run(*base, '-sdk', 'iphoneos', '-destination', 'generic/platform=iOS', 'build')
     device_app = build / 'DerivedData/Build/Products/Release-iphoneos/QJMobile.app'
     extension = device_app / 'PlugIns/QJKeyboard.appex'

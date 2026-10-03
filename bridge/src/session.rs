@@ -121,10 +121,11 @@ impl Session {
                 else { committed = self.finish_composition(); }
             }
             Action::Raw => committed = self.engine.take_raw(),
-            Action::Cancel | Action::Reset => {
+            Action::Cancel => {
                 self.engine.clear();
                 self.engine.break_chain();
             }
+            Action::Reset => self.engine.discard_input(),
             Action::ToggleLanguage => {
                 committed = self.finish_composition();
                 self.engine.set_english_mode(!self.engine.english_mode());
