@@ -5,10 +5,13 @@ final class EngineClient {
     private let queue = DispatchQueue(label: "app.qjmobile.engine", qos: .userInitiated)
     private var handle: UInt64 = 0
     private var initializationAttempted = false
+    private let resourceBundle: Bundle
     #if BOOTSTRAP
     private var demoEnglish = true
     private var demoRevision: UInt64 = 0
     #endif
+
+    init(resourceBundle: Bundle = .main) { self.resourceBundle = resourceBundle }
 
     func perform(_ command: [String: Any], completion: @escaping (EngineFrame?) -> Void) {
         queue.async { [self] in
@@ -24,8 +27,8 @@ final class EngineClient {
             #else
             if !initializationAttempted {
                 initializationAttempted = true
-                if let dict = Bundle.main.path(forResource: "dict", ofType: "qj"),
-                   let gloss = Bundle.main.path(forResource: "glossary-en", ofType: "qj") {
+                if let dict = resourceBundle.path(forResource: "dict", ofType: "qj"),
+                   let gloss = resourceBundle.path(forResource: "glossary-en", ofType: "qj") {
                     handle = dict.withCString { dictPointer in
                         gloss.withCString { qjm_create(dictPointer, $0) }
                     }
